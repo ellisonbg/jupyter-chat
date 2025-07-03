@@ -7,7 +7,6 @@ import {
   Autocomplete,
   AutocompleteInputChangeReason,
   Box,
-  InputAdornment,
   SxProps,
   TextField,
   Theme
@@ -165,17 +164,6 @@ export function ChatInput(props: ChatInput.IProps): JSX.Element {
     }
   }
 
-  // Set the helper text based on whether Shift+Enter is used for sending.
-  const helperText = sendWithShiftEnter ? (
-    <span>
-      Press <b>Shift</b>+<b>Enter</b> to send message
-    </span>
-  ) : (
-    <span>
-      Press <b>Shift</b>+<b>Enter</b> to add a new line
-    </span>
-  );
-
   return (
     <Box sx={props.sx} className={clsx(INPUT_BOX_CLASS)}>
       <AttachmentPreviewList
@@ -211,27 +199,17 @@ export function ChatInput(props: ChatInput.IProps): JSX.Element {
             onKeyDown={handleKeyDown}
             placeholder="Start chatting"
             inputRef={inputRef}
-            sx={{ marginTop: '1px' }}
+            sx={{ p: 1 }}
             onSelect={() =>
               (model.cursorIndex = inputRef.current?.selectionStart ?? null)
             }
             InputProps={{
               ...params.InputProps,
-              endAdornment: (
-                <InputAdornment position="end" className={INPUT_TOOLBAR_CLASS}>
-                  {toolbarElements.map(item => (
-                    <item.element
-                      model={model}
-                      chatCommandRegistry={props.chatCommandRegistry}
-                    />
-                  ))}
-                </InputAdornment>
-              )
+              disableUnderline: true
             }}
             FormHelperTextProps={{
-              sx: { marginLeft: 'auto', marginRight: 0 }
+              sx: { display: 'none' }
             }}
-            helperText={input.length > 2 ? helperText : ' '}
           />
         )}
         inputValue={input}
@@ -248,6 +226,14 @@ export function ChatInput(props: ChatInput.IProps): JSX.Element {
           }
         }}
       />
+      <Box className={INPUT_TOOLBAR_CLASS} display="flex" justifyContent="flex-end">
+        {toolbarElements.map(item => (
+          <item.element
+            model={model}
+            chatCommandRegistry={props.chatCommandRegistry}
+          />
+        ))}
+      </Box>
     </Box>
   );
 }
